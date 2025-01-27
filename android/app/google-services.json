@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "340042522532",
+    "firebase_url": "https://icontrol-767a6-default-rtdb.firebaseio.com",
+    "project_id": "icontrol-767a6",
+    "storage_bucket": "icontrol-767a6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:340042522532:android:d24fde1728122adc49ab31",
+        "android_client_info": {
+          "package_name": "com.codetivelab.quick_cart"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDeDil8IFlINzhGPbq-fUxzYwxMkUOK3Qg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
