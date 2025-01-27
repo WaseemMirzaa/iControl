@@ -81,7 +81,6 @@ class UserService {
       // Reference to the user's verification field in the database
       final userRef = _dbRef.child(AppConst.usersCollection).child(uid);
 
-      // Update the verification status
       await userRef.update({
         AppConst.isVerifiedField: isVerified,
       });

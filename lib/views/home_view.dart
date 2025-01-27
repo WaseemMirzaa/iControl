@@ -1,6 +1,8 @@
 import 'package:app_name/model/kamoa.dart';
 import 'package:app_name/views/phase1.dart';
+import 'package:app_name/views/widgets/widgets/custom_button.dart';
 import 'package:app_name/views/widgets/widgets/generator_widget.dart';
+import 'package:app_name/views/widgets/widgets/speed_meter.dart';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -45,6 +47,13 @@ class HomeScreen extends StatelessWidget {
                 return _buildDataList(homeController);
               }),
             ),
+            // SpeedometerWidget(),
+            // CustomButton1(
+            //     color: Colors.blue,
+            //     onPressed: () {
+            //       Navigator.pop(context);
+            //     },
+            //     text: 'START'),
           ],
         ),
       ),
@@ -70,11 +79,9 @@ class HomeScreen extends StatelessWidget {
       children: [
         ..._buildInverterList(homeController),
         ..._buildMorgensonData(homeController),
-        ..._buildPermissionData(
-            homeController), // Added permission data section
+        ..._buildPermissionData(homeController),
         ..._buildEnergyData(homeController),
         ..._buildEnergyShiftData(homeController),
-
         const Text(
           'Generators Data',
           style: TextStyle(
@@ -82,7 +89,6 @@ class HomeScreen extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-
         GeneratorsDashboard(
           generatorsData: homeController.generatorsData.value,
           isLoading: homeController.isLoading.value,
@@ -99,7 +105,6 @@ class HomeScreen extends StatelessWidget {
             phase1Data: homeController.phase1Data.value,
             isLoading: homeController.isLoading.value,
             errorMessage: homeController.errorMessage.value),
-
         const Text(
           'PHASE 2 Data',
           style: TextStyle(

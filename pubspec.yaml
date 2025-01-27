@@ -47,6 +47,7 @@ dependencies:
   google_fonts: ^6.2.1
   intl: ^0.19.0
   firebase_database: ^11.3.0
+  speedometer: ^1.2.2
 
 dev_dependencies:
   flutter_test:

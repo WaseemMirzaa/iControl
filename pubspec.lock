@@ -528,6 +528,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.5"
+  rxdart:
+    dependency: transitive
+    description:
+      name: rxdart
+      sha256: "2ef8b4e91cb3b55d155e0e34eeae0ac7107974e451495c955ac04ddee8cc21fd"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.26.0"
   shared_preferences:
     dependency: transitive
     description:
@@ -605,6 +613,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.10.0"
+  speedometer:
+    dependency: "direct main"
+    description:
+      name: speedometer
+      sha256: "912423c19ecfdb1ea6a62931c69f025ea6b45e702498158260e54d4f46fb7f04"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.2"
   stack_trace:
     dependency: transitive
     description:
