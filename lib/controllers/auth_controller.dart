@@ -81,6 +81,14 @@ class AuthController extends GetxController {
         );
 
         await _userService.createUser(result.user!.uid, newUser);
+
+        // final Map<String, dynamic> permissions = {
+        //   "directory": true,
+        //   "page": true,
+        // };
+        // await _userService.addPermissions(email.trim(), permissions);
+
+
         _userController.updateUser(newUser);
         Get.offAllNamed(AppRoutes.verification);
       }

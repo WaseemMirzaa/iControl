@@ -10,7 +10,7 @@ class AppConst {
   static const String displayNameField = 'displayName';
   static const String photoUrlField = 'photoUrl';
   static const String createdAtField = 'createdAt';
-  static const String lastLoginAtField = 'lastLoginAt';
+  static const String lastLoginAtField = 'lastLogin';
   static const String metadataField = 'metadata';
   static const String passwordField = 'password';
   
