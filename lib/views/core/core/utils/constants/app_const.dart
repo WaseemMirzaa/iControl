@@ -7,7 +7,7 @@ class AppConst {
   static const String emailField = 'email';
   static const String isVerifiedField = 'isVerified';
   static const String uidField = 'uid';
-  static const String displayNameField = 'displayName';
+  static const String directoryAccess = 'directoryAccess';
   static const String photoUrlField = 'photoUrl';
   static const String createdAtField = 'createdAt';
   static const String lastLoginAtField = 'lastLogin';

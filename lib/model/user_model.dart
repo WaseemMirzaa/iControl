@@ -7,7 +7,7 @@ class UserModel {
   String? password;
   bool? isVerified;
   String? uid;
-  String? displayName;
+  String? directoryAccess;
   String? photoUrl;
   DateTime? createdAt;
   DateTime? lastLoginAt;
@@ -19,7 +19,7 @@ class UserModel {
     this.password,
     this.isVerified,
     this.uid,
-    this.displayName,
+    this.directoryAccess,
     this.photoUrl,
     this.createdAt,
     this.lastLoginAt,
@@ -45,7 +45,7 @@ class UserModel {
       email: data[AppConst.emailField] as String?,
       isVerified: data[AppConst.isVerifiedField] as bool?,
       uid: snapshot.key, // Use the key as UID
-      displayName: data[AppConst.displayNameField] as String?,
+      directoryAccess: data[AppConst.directoryAccess] as String?,
       photoUrl: data[AppConst.photoUrlField] as String?,
       createdAt: _parseDate(data[AppConst.createdAtField]),
       lastLoginAt: _parseDate(data[AppConst.lastLoginAtField]),
@@ -59,7 +59,7 @@ class UserModel {
       email: user.email,
       isVerified: user.emailVerified,
       uid: user.uid,
-      displayName: user.displayName,
+      directoryAccess: user.displayName,
       photoUrl: user.photoURL,
       metadata: {
         'lastSignInTime': user.metadata.lastSignInTime?.toIso8601String(),
@@ -75,7 +75,7 @@ class UserModel {
       password: json[AppConst.passwordField] as String?,
       isVerified: json[AppConst.isVerifiedField] as bool?,
       uid: json[AppConst.uidField] as String?,
-      displayName: json[AppConst.displayNameField] as String?,
+      directoryAccess: json[AppConst.directoryAccess] as String?,
       photoUrl: json[AppConst.photoUrlField] as String?,
       createdAt: json[AppConst.createdAtField] != null
           ? DateTime.parse(json[AppConst.createdAtField] as String)
@@ -94,10 +94,10 @@ class UserModel {
       AppConst.passwordField: password,
       AppConst.isVerifiedField: isVerified,
       AppConst.uidField: uid,
-      AppConst.displayNameField: displayName,
+      AppConst.directoryAccess: directoryAccess,
       AppConst.photoUrlField: photoUrl,
-      AppConst.createdAtField: createdAt?.toIso8601String(),
-      AppConst.lastLoginAtField: lastLoginAt?.toIso8601String(),
+      AppConst.createdAtField: createdAt?.toUtc().toIso8601String(),
+      AppConst.lastLoginAtField: lastLoginAt?.toUtc().toIso8601String(),
       AppConst.metadataField: metadata,
     };
   }
@@ -119,7 +119,7 @@ class UserModel {
       password: password ?? this.password,
       isVerified: isVerified ?? this.isVerified,
       uid: uid ?? this.uid,
-      displayName: displayName ?? this.displayName,
+      directoryAccess: displayName ?? this.directoryAccess,
       photoUrl: photoUrl ?? this.photoUrl,
       createdAt: createdAt ?? this.createdAt,
       lastLoginAt: lastLoginAt ?? this.lastLoginAt,
@@ -131,7 +131,7 @@ class UserModel {
   @override
   String toString() {
     return 'UserModel(email: $email, isVerified: $isVerified, uid: $uid, '
-        'displayName: $displayName, createdAt: $createdAt)';
+        'directoryAccess: $directoryAccess, createdAt: $createdAt)';
   }
 
   // Override equality operator
@@ -142,7 +142,7 @@ class UserModel {
         other.email == email &&
         other.uid == uid &&
         other.isVerified == isVerified &&
-        other.displayName == displayName &&
+        other.directoryAccess == directoryAccess &&
         other.photoUrl == photoUrl;
   }
 
@@ -153,7 +153,7 @@ class UserModel {
       email,
       uid,
       isVerified,
-      displayName,
+      directoryAccess,
       photoUrl,
     );
   }
@@ -164,5 +164,5 @@ class UserModel {
 
   // Check if user has complete profile
   bool get hasCompleteProfile =>
-      email != null && isVerified == true && displayName != null;
+      email != null && isVerified == true && directoryAccess != null;
 }

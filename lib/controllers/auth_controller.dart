@@ -73,7 +73,7 @@ class AuthController extends GetxController {
       if (result.user != null) {
         final UserModel newUser = UserModel(
           email: email.trim(),
-          displayName: name,
+          directoryAccess: name,
           isVerified: false,
           uid: result.user!.uid,
           createdAt: DateTime.now(),
@@ -82,11 +82,11 @@ class AuthController extends GetxController {
 
         await _userService.createUser(result.user!.uid, newUser);
 
-        // final Map<String, dynamic> permissions = {
-        //   "directory": true,
-        //   "page": true,
-        // };
-        // await _userService.addPermissions(email.trim(), permissions);
+        final Map<String, dynamic> permissions = {
+          "directory": name,
+          "page": "$name.html",
+        };
+        await _userService.addPermissions(email.trim(), permissions);
 
 
         _userController.updateUser(newUser);

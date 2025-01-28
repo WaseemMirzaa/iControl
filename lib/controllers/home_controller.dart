@@ -39,25 +39,46 @@ class PermissionData {
 
 class SPData {
   final String appStatus;
+  final String faultStatus;
+  final int torqueOutput;
+  final int currentPowerOnTime;
+  final int currentRunTime;
+  final int runFreq;
+  final int bsVoltage;
+  final int temp;
   final double lat;
   final double long;
-  final bool hasOutputDash;
+  final int outputVoltage;
   final String pumpStartTime;
 
   SPData({
     required this.appStatus,
+    required this.faultStatus,
+    required this.torqueOutput,
+    required this.currentPowerOnTime,
+    required this.currentRunTime,
+    required this.runFreq,
+    required this.bsVoltage,
+    required this.temp,
     required this.lat,
     required this.long,
-    required this.hasOutputDash,
+    required this.outputVoltage,
     required this.pumpStartTime,
   });
 
   factory SPData.fromMap(Map<String, dynamic> map) {
     return SPData(
-      appStatus: map['appstatus'] ?? '',
+      appStatus: map['statusDescription'] ?? '',
+      faultStatus: map['fault_info']?['description'] ?? '',
+      torqueOutput: map['Output_Torque'] ?? 0.0,
+      currentPowerOnTime: map['Current_Power_ON_Time'] ?? 0.0,
+      currentRunTime: map['Current_Run_Time'] ?? 0.0,
+      runFreq: map['Running_Frequency'] ?? 0.0,
+      bsVoltage: map['Bus_voltage'] ?? 0.0,
+      temp: map['VSD_temp'] ?? 0.0,
       lat: map['center']?['lat']?.toDouble() ?? 0.0,
       long: map['center']?['long']?.toDouble() ?? 0.0,
-      hasOutputDash: map['hasOutputDash'] ?? false,
+      outputVoltage: map['Output_Voltage'] ?? 0.0,
       pumpStartTime: map['pump_start_time'] ?? '',
     );
   }

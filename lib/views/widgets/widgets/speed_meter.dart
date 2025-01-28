@@ -14,7 +14,6 @@ class _SpeedometerWidgetState extends State<SpeedometerWidget> {
   double _upperValue = 40.0;
   int start = 0;
   int end = 60;
-
   Duration _animationDuration = Duration(milliseconds: 100);
 
   PublishSubject<double> eventObservable = PublishSubject();
@@ -22,7 +21,7 @@ class _SpeedometerWidgetState extends State<SpeedometerWidget> {
   @override
   void initState() {
     super.initState();
-    const click = const Duration(milliseconds: 500);
+    const click = Duration(milliseconds: 500);
     var rng = Random();
     Timer.periodic(click,
             (Timer t) => eventObservable.add(rng.nextInt(59) + rng.nextDouble()));
@@ -30,34 +29,45 @@ class _SpeedometerWidgetState extends State<SpeedometerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Calculate the size dynamically based on available width
+        double size = constraints.maxWidth * 0.8;
+        double padding = size * 0.05;
 
-    // Updated themeData to make the speedometer blue
-    ThemeData somTheme = theme.copyWith(
-      colorScheme: theme.colorScheme.copyWith(
-        primary: Colors.blue, // Blue primary color
-        secondary: Colors.blue, // Blue secondary color
-        background: Colors.blue.shade100, // Light blue background
-      ),
-    );
+        final ThemeData theme = Theme.of(context);
 
-    var speedOMeter = SpeedOMeter(
-      start: start,
-      end: end,
-      highlightStart: (_lowerValue / end),
-      highlightEnd: (_upperValue / end),
-      themeData: somTheme,
-      eventObservable: this.eventObservable,
-      animationDuration: _animationDuration,
-    );
+        ThemeData somTheme = theme.copyWith(
+          colorScheme: theme.colorScheme.copyWith(
+            primary: Colors.blue,
+            secondary: Colors.blue,
+            background: Colors.blue.shade100,
+          ),
+        );
 
-    return Column(
-      children: <Widget>[
-        Padding(
-          padding: EdgeInsets.all(40.0),
-          child: speedOMeter,
-        ),
-      ],
+        var speedOMeter = Transform.scale(
+          scale: constraints.maxWidth / 400,
+          child: SpeedOMeter(
+            start: start,
+            end: end,
+            highlightStart: (_lowerValue / end),
+            highlightEnd: (_upperValue / end),
+            themeData: somTheme,
+            eventObservable: this.eventObservable,
+            animationDuration: _animationDuration,
+          ),
+        );
+
+
+        return Center(
+          child: Container(
+            width: size,
+            height: size,
+            padding: EdgeInsets.all(padding),
+            child: speedOMeter,
+          ),
+        );
+      },
     );
   }
 }

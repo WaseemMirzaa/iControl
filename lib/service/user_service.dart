@@ -94,17 +94,17 @@ class UserService {
     }
   }
 
-  // Future<void> addPermissions(String email, Map<String, dynamic> permissions) async {
-  //   try {
-  //     final sanitizedEmail = email.replaceAll('.', '_');
-  //     final permissionsRef = _dbRef.child('permissions').child(sanitizedEmail);
-  //     await permissionsRef.set(permissions);
-  //     ('Permissions added successfully for $sanitizedEmail');
-  //   } catch (e) {
-  //     ('Error adding permissions for $email: $e');
-  //     throw Exception('Failed to add permissions: $e');
-  //   }
-  // }
+  Future<void> addPermissions(String email, Map<String, dynamic> permissions) async {
+    try {
+      final sanitizedEmail = email.replaceAll('.', '_');
+      final permissionsRef = _dbRef.child('permissions').child(sanitizedEmail);
+      await permissionsRef.set(permissions);
+      ('Permissions added successfully for $sanitizedEmail');
+    } catch (e) {
+      ('Error adding permissions for $email: $e');
+      throw Exception('Failed to add permissions: $e');
+    }
+  }
 
 }
 
