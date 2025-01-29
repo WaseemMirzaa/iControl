@@ -24,7 +24,7 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SpeedometerWidget(),
+            // SpeedometerWidget(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -98,7 +98,7 @@ class HomeScreen extends StatelessWidget {
   Widget _buildDataList(HomeController homeController) {
     return ListView(
       children: [
-        // ..._buildInverterList(homeController),
+        ..._buildInverterList(homeController),
         ..._buildMorgensonData(homeController),
         // ..._buildPermissionData(homeController),
         // ..._buildEnergyData(homeController),
@@ -282,37 +282,43 @@ class HomeScreen extends StatelessWidget {
   //   }).toList();
   // }
   //
-  // Widget _buildInverterCard(InverterData inverter) {
-  //   return Card(
-  //     margin: const EdgeInsets.only(bottom: 16),
-  //     child: Padding(
-  //       padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 12.0),
-  //       child: Column(
-  //         crossAxisAlignment: CrossAxisAlignment.start,
-  //         children: [
-  //           Text(
-  //             'Inverter ${inverter.id}',
-  //             style: const TextStyle(
-  //               fontSize: 18,
-  //               fontWeight: FontWeight.bold,
-  //             ),
-  //           ),
-  //           const SizedBox(height: 8),
-  //           Text('ID: ${inverter.id}', style: const TextStyle(fontSize: 14)),
-  //           const SizedBox(height: 4),
-  //           Text('Data: ${inverter.data}',
-  //               style: const TextStyle(fontSize: 14)),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
+  Widget _buildInverterCard(InverterData inverter) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 16),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Center(
+              child:  Text(
+                'Inverter',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text('ID: ${inverter.id}', style: const TextStyle(fontSize: 14)),
+            const SizedBox(height: 4),
+            Row(
+              children: [
+                Text('Data: ${inverter.data}',
+                    style: const TextStyle(fontSize: 14)),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
-  // List<Widget> _buildInverterList(HomeController homeController) {
-  //   return homeController.inverterData.map((inverter) {
-  //     return _buildInverterCard(inverter);
-  //   }).toList();
-  // }
+  List<Widget> _buildInverterList(HomeController homeController) {
+    return homeController.inverterData.map((inverter) {
+      return _buildInverterCard(inverter);
+    }).toList();
+  }
   //
   List<Widget> _buildMorgensonData(HomeController homeController) {
     return homeController.spData.entries.map((entry) {
@@ -344,13 +350,13 @@ class HomeScreen extends StatelessWidget {
               RichText(
                 text: TextSpan(
                   children: [
-                    TextSpan(
+                    const  TextSpan(
                       text: 'Status: ',
                       style: TextStyle(fontSize: 14, color: Colors.black),
                     ),
                     TextSpan(
                       text: '${sp.appStatus}',
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
                           color: Colors.black),
@@ -366,14 +372,14 @@ class HomeScreen extends StatelessWidget {
                         style:  TextStyle(fontSize: 14, color: Colors.black)
                     ), TextSpan(
                       text: '${sp.runFreq}HZ',
-                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black),
+                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black),
                     )
                   ]
               )),
 
               RichText(
                   text: TextSpan(children: [
-                TextSpan(
+                const TextSpan(
                   text: 'Output: ',
                   style: TextStyle(fontSize: 14, color: Colors.black),
                 ),
@@ -402,12 +408,12 @@ class HomeScreen extends StatelessWidget {
             children: [
               RichText(text: TextSpan(
                   children: [
-                    TextSpan(
+                    const TextSpan(
                         text: 'Fault Status: ',
-                        style: const TextStyle(fontSize: 16, color: Colors.black)
+                        style:  TextStyle(fontSize: 16, color: Colors.black)
                     ), TextSpan(
                       text: '${sp.faultStatus}',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
                     )
                   ]
               )),
