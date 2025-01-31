@@ -9,13 +9,37 @@ import 'package:get/get.dart';
 import '../controllers/home_controller.dart';
 import '../controllers/auth_controller.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final HomeController homeController = Get.find<HomeController>();
     final AuthController authController = Get.find<AuthController>();
+
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final double padding = screenWidth * 0.05;
+    final double buttonWidth = screenWidth * 0.25;
 
     return Scaffold(
       appBar: _buildAppBar(authController),
@@ -25,33 +49,18 @@ class HomeScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // SpeedometerWidget(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                CustomButton1(
-                    color: Colors.green,
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    text: 'START'),
-                CustomButton1(
-                    color: Colors.red,
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    text: 'STOP'),
-                CustomButton1(
-                    color: Colors.orange,
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    text: 'RESET'),
-              ],
-            ),
-            const SizedBox(
-              height: 5,
-            ),
 
+            _buildButtonRow(context, screenWidth),
+            SizedBox(height: screenHeight * 0.02),
+            const Center(
+              child:  Text(
+                'Inverter',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
             Expanded(
               child: Obx(() {
                 if (homeController.isLoading.value) {
@@ -72,12 +81,23 @@ class HomeScreen extends StatelessWidget {
                   );
                 }
 
-                return _buildDataList(homeController);
+                return _buildDataList(homeController, screenHeight, screenWidth);
               }),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildButtonRow(BuildContext context, double screenWidth) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        CustomButton1(color: Colors.green, onPressed: () => Navigator.pop(context), text: 'START', ),
+        CustomButton1(color: Colors.red, onPressed: () => Navigator.pop(context), text: 'STOP', ),
+        CustomButton1(color: Colors.orange, onPressed: () => Navigator.pop(context), text: 'RESET',),
+      ],
     );
   }
 
@@ -95,222 +115,99 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDataList(HomeController homeController) {
-    return ListView(
-      children: [
-        ..._buildInverterList(homeController),
-        ..._buildMorgensonData(homeController),
-        // ..._buildPermissionData(homeController),
-        // ..._buildEnergyData(homeController),
-        // ..._buildEnergyShiftData(homeController),
+  Widget _buildDataList(HomeController homeController, double screenHeight, double screenWidth) {
+    return SizedBox(
+      height: screenHeight * 0.8,
+      width: screenWidth * 0.95,
+      child: Column(
+        children: [
+          Expanded(
+            flex: 1,
+            child: ListView(
+              children: [
+                ..._buildInverterList(homeController),
+                // ..._buildMorgensonData(homeController),
+              ],
+            ),
+          ),
 
-        // const Text(
-        //   'Generators Data',
-        //   style: TextStyle(
-        //     fontSize: 24,
-        //     fontWeight: FontWeight.bold,
-        //   ),
-        // ),
-        // GeneratorsDashboard(
-        //   generatorsData: homeController.generatorsData.value,
-        //   isLoading: homeController.isLoading.value,
-        //   errorMessage: homeController.errorMessage.value,
-        // ),
-        // const Text(
-        //   'PHASE 1 Data',
-        //   style: TextStyle(
-        //     fontSize: 24,
-        //     fontWeight: FontWeight.bold,
-        //   ),
-        // ),
-        // Phase1Dashboard(
-        //     phase1Data: homeController.phase1Data.value,
-        //     isLoading: homeController.isLoading.value,
-        //     errorMessage: homeController.errorMessage.value),
-        // const Text(
-        //   'PHASE 2 Data',
-        //   style: TextStyle(
-        //     fontSize: 24,
-        //     fontWeight: FontWeight.bold,
-        //   ),
-        // ),
-        // Phase1Dashboard(
-        //     phase1Data: homeController.phase2Data.value,
-        //     isLoading: homeController.isLoading.value,
-        //     errorMessage: homeController.errorMessage.value),
-        // const Text(
-        //   'PHASE 3 Data',
-        //   style: TextStyle(
-        //     fontSize: 24,
-        //     fontWeight: FontWeight.bold,
-        //   ),
-        // ),
-        // Phase1Dashboard(
-        //     phase1Data: homeController.phase3Data.value,
-        //     isLoading: homeController.isLoading.value,
-        //     errorMessage: homeController.errorMessage.value),
-      ],
+          // Tab Bar Container
+          Container(
+            height: 40,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: Colors.grey[300], // Background color for the tab container
+            ),
+            child: TabBar(
+              controller: _tabController,
+              labelColor: Colors.white, // Text color when selected
+              unselectedLabelColor: Colors.black, // Text color when not selected
+              indicator: BoxDecoration(
+                color: Colors.green, // Selected tab background color
+                borderRadius: BorderRadius.circular(20), // Makes it round
+              ),
+              indicatorSize: TabBarIndicatorSize.tab, // Ensures full height indicator
+              dividerColor: Colors.transparent, // Hides the bottom line
+              overlayColor: MaterialStateProperty.all(Colors.transparent), // No highlight effect
+              tabs: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.3, // 60% width of tab
+                  child: Tab(text: 'SP-01'),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.3, // 60% width of tab
+                  child: Tab(text: 'SP-02'),
+                ),
+              ],
+            ),
+          ),
+
+
+          // Tab Bar View
+          Expanded(
+            flex: 5,
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                // First Tab - SP-01
+                ListView(
+                  children: [
+                    ...homeController.spData.entries
+                        .where((entry) => entry.key == 'SP-01')
+                        .map((entry) => _buildSPCard(entry.key, entry.value)),
+                  ],
+                ),
+                // Second Tab - SP-02
+                ListView(
+                  children: [
+                    ...homeController.spData.entries
+                        .where((entry) => entry.key == 'SP-02')
+                        .map((entry) => _buildSPCard(entry.key, entry.value)),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
-  // List<Widget> _buildEnergyData(HomeController homeController) {
-  //   return homeController.energyData.map((energyData) {
-  //     return Card(
-  //       margin: const EdgeInsets.all(8.0),
-  //       child: ExpansionTile(
-  //         title: const Text(
-  //           'Energy Data',
-  //           style: TextStyle(fontWeight: FontWeight.bold),
-  //         ),
-  //         children: [
-  //           // Generation Section
-  //           _buildCategorySection(
-  //             'Generation',
-  //             energyData.generation,
-  //           ),
-  //
-  //           // Kakula KCS Section
-  //           _buildCategorySection(
-  //             'Kakula KCS',
-  //             energyData.kakulaKCS,
-  //           ),
-  //
-  //           // Kakula M&I Section
-  //           _buildCategorySection(
-  //             'Kakula M&I',
-  //             energyData.kakulaMAndI,
-  //           ),
-  //
-  //           // Kansoko M&I Section
-  //           _buildCategorySection(
-  //             'Kansoko M&I',
-  //             energyData.kansokoMAndI,
-  //           ),
-  //
-  //           // KMCS Line Feeders Section
-  //           _buildCategorySection(
-  //             'KMCS Line Feeders',
-  //             energyData.kmcsLineFeeders,
-  //           ),
-  //         ],
-  //       ),
-  //     );
-  //   }).toList();
-  // }
 
-  // Widget _buildCategorySection(
-  //     String title, Map<String, EnergyReading> readings) {
-  //   // Get the latest reading
-  //   final latestReading = _getLatestReading(readings);
-  //
-  //   if (latestReading == null) {
-  //     return const SizedBox.shrink();
-  //   }
-  //
-  //   return Padding(
-  //     padding: const EdgeInsets.all(16.0),
-  //     child: Column(
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       children: [
-  //         Text(
-  //           title,
-  //           style: const TextStyle(
-  //             fontSize: 16,
-  //             fontWeight: FontWeight.bold,
-  //           ),
-  //         ),
-  //         const SizedBox(height: 8),
-  //         // Display each energy data reading
-  //         ...latestReading.energyData
-  //             .map((data) => Padding(
-  //                   padding: const EdgeInsets.symmetric(vertical: 4.0),
-  //                   child: Text(data),
-  //                 ))
-  //             .toList(),
-  //         const SizedBox(height: 8),
-  //         Text(
-  //           'Timestamp: ${latestReading.timestamp}',
-  //           style: const TextStyle(
-  //             fontSize: 12,
-  //             fontStyle: FontStyle.italic,
-  //             color: Colors.grey,
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-  //
-  // EnergyReading? _getLatestReading(Map<String, EnergyReading> readings) {
-  //   if (readings.isEmpty) return null;
-  //
-  //   // Find the reading with the latest timestamp
-  //   return readings.values
-  //       .reduce((a, b) => a.timestampServer > b.timestampServer ? a : b);
-  // }
-  //
-  // List<Widget> _buildEnergyShiftData(HomeController homeController) {
-  //   return homeController.energyDataSihftChanging.map((energyData) {
-  //     return Card(
-  //       margin: const EdgeInsets.all(8.0),
-  //       child: ExpansionTile(
-  //         title: const Text(
-  //           'Energy Data Shift Changing',
-  //           style: TextStyle(fontWeight: FontWeight.bold),
-  //         ),
-  //         children: [
-  //           // Kakula KCS Section
-  //           _buildCategorySection(
-  //             'Kakula KCS',
-  //             energyData.kakulaKCS,
-  //           ),
-  //
-  //           // Kakula M&I Section
-  //           _buildCategorySection(
-  //             'Kakula M&I',
-  //             energyData.kakulaMAndI,
-  //           ),
-  //
-  //           // KMCS Line Feeders Section
-  //           _buildCategorySection(
-  //             'KMCS Line Feeders',
-  //             energyData.kmcsLineFeeders,
-  //           ),
-  //         ],
-  //       ),
-  //     );
-  //   }).toList();
-  // }
-  //
+
   Widget _buildInverterCard(InverterData inverter) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 16),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 12.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Center(
-              child:  Text(
-                'Inverter',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text('ID: ${inverter.id}', style: const TextStyle(fontSize: 14)),
-            const SizedBox(height: 4),
-            Row(
-              children: [
-                Text('Data: ${inverter.data}',
-                    style: const TextStyle(fontSize: 14)),
-              ],
-            ),
-          ],
-        ),
-      ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
+      child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('ID: ${inverter.id}', style: const TextStyle(fontSize: 12.5)),
+              const SizedBox(height: 4),
+              Text('Data: ${inverter.data}',
+                  style: const TextStyle(fontSize: 13)),
+            ],
+          ),
+
     );
   }
 
@@ -329,226 +226,199 @@ class HomeScreen extends StatelessWidget {
 
 // SP Widget
   Widget _buildSPCard(String spName, SPData sp) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 6.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            spName,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+    return LayoutBuilder(builder: (context, constraints){
+      final double fontSize = constraints.maxWidth * 0.04;
+      final double spacing = constraints.maxWidth * 0.04;
+      return Padding(
+        padding: EdgeInsets.symmetric(vertical: spacing, horizontal: spacing / 2),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              spName,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-
-          // fist row
-          const SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              RichText(
-                text: TextSpan(
+            SizedBox(height: spacing,),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                //***Fist section
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const  TextSpan(
-                      text: 'Status: ',
-                      style: TextStyle(fontSize: 14, color: Colors.black),
+
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          const  TextSpan(
+                            text: 'Status: ',
+                            style: TextStyle(fontSize: 14.3, color: Colors.black),
+                          ),
+                          TextSpan(
+                            text: '${sp.appStatus}',
+                            style: const TextStyle(
+                                fontSize: 14.3,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black),
+                          ),
+                        ],
+                      ),
                     ),
-                    TextSpan(
-                      text: '${sp.appStatus}',
-                      style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black),
-                    ),
+
+                    SizedBox(height: spacing),
+
+                    RichText(text: TextSpan(
+                        children: [
+                          const TextSpan(
+                              text: 'Run Freq: ',
+                              style:  TextStyle(fontSize: 14.3, color: Colors.black)
+                          ), TextSpan(
+                            text: '${sp.runFreq}HZ',
+                            style: const TextStyle(fontSize: 14.3, fontWeight: FontWeight.bold, color: Colors.black),
+                          )
+                        ]
+                    )),
+
+                    SizedBox(height: spacing),
+
+                    RichText(
+                        text: TextSpan(children: [
+                          const TextSpan(
+                            text: 'Output: ',
+                            style: TextStyle(fontSize: 14.3, color: Colors.black),
+                          ),
+                          TextSpan(
+                            text: '${sp.outputVoltage}kW',
+                            style: const TextStyle(
+                                fontSize: 14.3,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black),
+                          ),
+                        ])),
+
+                    SizedBox(height: spacing),
+
+                    RichText(text: TextSpan(
+                        children: [
+                          const TextSpan(
+                              text: 'Fault Status: ',
+                              style:  TextStyle(fontSize: 14.3, color: Colors.black)
+                          ), TextSpan(
+                            text: '${sp.faultStatus}',
+                            style: const TextStyle(fontSize: 14.3, fontWeight: FontWeight.bold, color: Colors.black),
+                          )
+                        ]
+                    )),
+
+                    SizedBox(height: spacing),
+
+                    RichText(text: TextSpan(
+                        children: [
+                          const TextSpan(
+                              text: 'Torque: ',
+                              style: const TextStyle(fontSize: 14.3, color: Colors.black)
+                          ), TextSpan(
+                            text: '${sp.torqueOutput}',
+                            style: TextStyle(fontSize: 14.3, fontWeight: FontWeight.bold, color: Colors.black),
+                          )
+                        ]
+                    )),
                   ],
                 ),
-              ),
 
-              RichText(text: TextSpan(
+                //***Second section
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const TextSpan(
-                        text: 'Run Freq: ',
-                        style:  TextStyle(fontSize: 14, color: Colors.black)
-                    ), TextSpan(
-                      text: '${sp.runFreq}HZ',
-                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black),
-                    )
-                  ]
-              )),
+                    RichText(text: TextSpan(
+                        children: [
+                          const TextSpan(
+                              text: 'DC Bus: ',
+                              style: const TextStyle(fontSize: 14.3, color: Colors.black)
+                          ), TextSpan(
+                            text: '${sp.bsVoltage} VDC',
+                            style: TextStyle(fontSize: 14.3, fontWeight: FontWeight.bold, color: Colors.black),
+                          )
+                        ]
+                    )),
 
-              RichText(
-                  text: TextSpan(children: [
-                const TextSpan(
-                  text: 'Output: ',
-                  style: TextStyle(fontSize: 14, color: Colors.black),
+                    SizedBox(height: spacing),
+
+                    RichText(text: TextSpan(
+                        children: [
+                          const TextSpan(
+                              text: 'Temp: ',
+                              style:  TextStyle(fontSize: 14.3, color: Colors.black)
+                          ), TextSpan(
+                            text: '${sp.temp}°C',
+                            style: const TextStyle(fontSize: 14.3, fontWeight: FontWeight.bold, color: Colors.black),
+                          )
+                        ]
+                    )),
+
+                    SizedBox(height: spacing),
+
+                    RichText(text: TextSpan(
+                        children: [
+                          const TextSpan(
+                              text: 'Pwr On Time: ',
+                              style:  TextStyle(fontSize: 14.3, color: Colors.black)
+                          ), TextSpan(
+                            text: '${sp.currentPowerOnTime} min',
+                            style: const TextStyle(fontSize: 14.3, fontWeight: FontWeight.bold, color: Colors.black),
+                          )
+                        ]
+                    )),
+
+                    SizedBox(height: spacing),
+
+                    RichText(text: TextSpan(
+                        children: [
+                          const TextSpan(
+                              text: 'Run Time: ',
+                              style: const TextStyle(fontSize: 14.3, color: Colors.black)
+                          ), TextSpan(
+                            text: '${sp.currentRunTime} min',
+                            style: TextStyle(fontSize: 14.3, fontWeight: FontWeight.bold, color: Colors.black),
+                          )
+                        ]
+                    )),
+                  ],
                 ),
-                TextSpan(
-                  text: '${sp.outputVoltage}kW',
-                  style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black),
-                ),
-              ]))
-            ],
-          ),
 
+              ],
+            ),
 
-          // const SizedBox(height: 4),
-          // Text(
-          //   'Center: Lat = ${sp.lat}, Long = ${sp.long}',
-          //   style: const TextStyle(fontSize: 14),
-          // ),
-
-          // second row
-          const SizedBox(height: 30),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              RichText(text: TextSpan(
-                  children: [
-                    const TextSpan(
-                        text: 'Fault Status: ',
-                        style:  TextStyle(fontSize: 16, color: Colors.black)
-                    ), TextSpan(
-                      text: '${sp.faultStatus}',
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
-                    )
-                  ]
-              )),
-              RichText(text: TextSpan(
-                  children: [
-                    TextSpan(
-                        text: 'Torque: ',
-                        style: const TextStyle(fontSize: 16, color: Colors.black)
-                    ), TextSpan(
-                      text: '${sp.torqueOutput}',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
-                    )
-                  ]
-              )),
-
-            ],
-          ),
-
-
-          // third Row
-          const SizedBox(height: 30),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              RichText(text: TextSpan(
-                  children: [
-                    TextSpan(
-                        text: 'DC Bus: ',
-                        style: const TextStyle(fontSize: 16, color: Colors.black)
-                    ), TextSpan(
-                      text: '${sp.bsVoltage} VDC',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
-                    )
-                  ]
-              )),
-              RichText(text: TextSpan(
-                  children: [
-                    TextSpan(
-                        text: 'Temp: ',
-                        style: const TextStyle(fontSize: 16, color: Colors.black)
-                    ), TextSpan(
-                      text: '${sp.temp}°C',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
-                    )
-                  ]
-              )),
-
-            ],
-          ),
-
-          // Last Row
-          const SizedBox(height: 30),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              RichText(text: TextSpan(
-                  children: [
-                    TextSpan(
-                        text: 'Pwr On Time: ',
-                        style: const TextStyle(fontSize: 16, color: Colors.black)
-                    ), TextSpan(
-                      text: '${sp.currentPowerOnTime} min',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
-                    )
-                  ]
-              )),
-              RichText(text: TextSpan(
-                  children: [
-                    TextSpan(
-                        text: 'Run Time: ',
-                        style: const TextStyle(fontSize: 16, color: Colors.black)
-                    ), TextSpan(
-                      text: '${sp.currentRunTime} min',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
-                    )
-                  ]
-              )),
-            ],
-          ),
-
-          const SizedBox(height: 30),
-          RichText(text: TextSpan(
-            children: [
-              const TextSpan(
-                text: 'Pump Start Time: ',
-                style: TextStyle(fontSize: 16, color: Colors.black)
-              ),
-              const TextSpan(
-                text: '              ',
-                style: TextStyle(fontSize: 20),
-              ),
-              TextSpan(
-                text: '${sp.pumpStartTime}',
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
-              )
-            ]
-          )),
-        ],
-      ),
-    );
+             SizedBox(height: spacing),
+            RichText(text: TextSpan(
+                children: [
+                  const TextSpan(
+                      text: 'Pump Start Time: ',
+                      style: TextStyle(fontSize: 14.3, color: Colors.black)
+                  ),
+                  const TextSpan(
+                    text: '              ',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  TextSpan(
+                    text: '${sp.pumpStartTime}',
+                    style: const TextStyle(fontSize: 14.3, fontWeight: FontWeight.bold, color: Colors.black),
+                  )
+                ]
+            )),
+          ],
+        ),
+      );
+    });
   }
-
-// Builds the permission data section
-// List<Widget> _buildPermissionData(HomeController homeController) {
-//   return homeController.permissionData.entries.map((entry) {
-//     final permission = entry.value;
-//     return _buildPermissionCard(entry.key, permission);
-//   }).toList();
-// }
-
-// Builds a single permission card
-// Widget _buildPermissionCard(String userName, PermissionData permission) {
-//   return Card(
-//     margin: const EdgeInsets.only(bottom: 16),
-//     child: Padding(
-//       padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 12.0),
-//       child: Column(
-//         crossAxisAlignment: CrossAxisAlignment.start,
-//         children: [
-//           Text(
-//             'User: $userName',
-//             style: const TextStyle(
-//               fontSize: 18,
-//               fontWeight: FontWeight.bold,
-//             ),
-//           ),
-//           const SizedBox(height: 8),
-//           Text('Directory: ${permission.directory}',
-//               style: const TextStyle(fontSize: 14)),
-//           const SizedBox(height: 4),
-//           Text('Page: ${permission.page}',
-//               style: const TextStyle(fontSize: 14)),
-//         ],
-//       ),
-//     ),
-//   );
-// }
 }
+
+
+
+
