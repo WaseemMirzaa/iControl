@@ -15,7 +15,7 @@ abstract class AppPages {
     GetPage(name: AppRoutes.signup, page: () => const SignupView()),
     GetPage(
         name: AppRoutes.forgotPassword, page: () => const ForgotPasswordView()),
-    GetPage(name: AppRoutes.home, page: () => HomeScreen()),
+    GetPage(name: AppRoutes.home, page: () => const HomeScreen()),
     GetPage(
         name: AppRoutes.verification, page: () => const VerificationScreen()),
   ];

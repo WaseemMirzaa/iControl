@@ -1,73 +1,71 @@
-import 'dart:async';
-import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:speedometer/speedometer.dart';
-import 'package:rxdart/rxdart.dart';
+import 'package:kdgaugeview/kdgaugeview.dart';
 
-class SpeedometerWidget extends StatefulWidget {
+class SpeedMeter extends StatefulWidget {
+  final double maxSpeed;
+  final double speed;
+  final String unitOfMeasurement;
+  final List<double> alertSpeedArray;  // Changed to List<double>
+
+  const SpeedMeter({
+    super.key,
+    required this.maxSpeed,
+    required this.speed,
+    required this.unitOfMeasurement,
+    required this.alertSpeedArray,
+  });
+
   @override
-  _SpeedometerWidgetState createState() => _SpeedometerWidgetState();
+  State<SpeedMeter> createState() => _SpeedMeterState();
 }
 
-class _SpeedometerWidgetState extends State<SpeedometerWidget> {
-  double _lowerValue = 20.0;
-  double _upperValue = 40.0;
-  int start = 0;
-  int end = 60;
-  Duration _animationDuration = Duration(milliseconds: 100);
-
-  PublishSubject<double> eventObservable = PublishSubject();
-
-  @override
-  void initState() {
-    super.initState();
-    const click = Duration(milliseconds: 500);
-    var rng = Random();
-    Timer.periodic(click,
-            (Timer t) => eventObservable.add(rng.nextInt(59) + rng.nextDouble()));
-  }
-
+class _SpeedMeterState extends State<SpeedMeter> {
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        // Calculate the size dynamically based on available width
-        double size = constraints.maxWidth * 0.8;
-        double padding = size * 0.05;
+    final size = MediaQuery.of(context).size;
+    final minDimension = size.width < size.height ? size.width : size.height;
 
-        final ThemeData theme = Theme.of(context);
+    return Scaffold(
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final gaugeSize = constraints.maxWidth < constraints.maxHeight
+              ? constraints.maxWidth
+              : constraints.maxHeight;
 
-        ThemeData somTheme = theme.copyWith(
-          colorScheme: theme.colorScheme.copyWith(
-            primary: Colors.blue,
-            secondary: Colors.blue,
-            background: Colors.blue.shade100,
-          ),
-        );
+          final baseTextSize = gaugeSize * 0.06;
 
-        var speedOMeter = Transform.scale(
-          scale: constraints.maxWidth / 400,
-          child: SpeedOMeter(
-            start: start,
-            end: end,
-            highlightStart: (_lowerValue / end),
-            highlightEnd: (_upperValue / end),
-            themeData: somTheme,
-            eventObservable: this.eventObservable,
-            animationDuration: _animationDuration,
-          ),
-        );
-
-
-        return Center(
-          child: Container(
-            width: size,
-            height: size,
-            padding: EdgeInsets.all(padding),
-            child: speedOMeter,
-          ),
-        );
-      },
+          return SizedBox(
+            width: gaugeSize,
+            height: gaugeSize,
+            child: KdGaugeView(
+              innerCirclePadding: 15,
+              minSpeed: 0,
+              maxSpeed: widget.maxSpeed,
+              speed: widget.speed,
+              animate: true,
+              duration: const Duration(seconds: 3),
+              alertColorArray: const [Colors.blue, Colors.orange, Colors.red],
+              alertSpeedArray: widget.alertSpeedArray,
+              unitOfMeasurement: widget.unitOfMeasurement,
+              gaugeWidth: minDimension * 0.015,
+              fractionDigits: 1,
+              speedTextStyle: TextStyle(
+                color: Colors.black,
+                fontSize: baseTextSize * 2,
+                fontWeight: FontWeight.bold,
+              ),
+              unitOfMeasurementTextStyle: TextStyle(
+                color: Colors.black,
+                fontSize: baseTextSize * 1.3,
+              ),
+              minMaxTextStyle: TextStyle(
+                color: Colors.black,
+                fontSize: baseTextSize * 0.8,
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }

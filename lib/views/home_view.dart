@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app_name/views/widgets/widgets/custom_button.dart';
 import 'package:app_name/views/widgets/widgets/speed_meter.dart';
 
@@ -15,49 +17,103 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  late HomeController homeController;
+  final Rx<SPData?> selectedSPData = Rx<SPData?>(null);
+
 
   @override
   void initState() {
     super.initState();
-    final HomeController homeController = Get.find<HomeController>();
+    homeController = Get.find<HomeController>();
     _tabController = TabController(length: homeController.spData.length, vsync: this);
+
+    // Initialize with sorted data
+    List<MapEntry<String, dynamic>> sortedSpData = homeController.spData.entries.toList()
+      ..sort((a, b) => a.key.compareTo(b.key));
+    selectedSPData.value = sortedSpData[_tabController.index].value;
+
+    _tabController.addListener(_onTabChanged);
+  }
+
+  void _onTabChanged() {
+    List<MapEntry<String, dynamic>> sortedSpData = homeController.spData.entries.toList()
+      ..sort((a, b) => a.key.compareTo(b.key));
+
+    selectedSPData.value = sortedSpData[_tabController.index].value;
+    print("Tab changed: ${_tabController.index}");
+    print("New BS Voltage: ${selectedSPData.value?.bsVoltage}");
   }
 
   @override
   void dispose() {
+    _tabController.removeListener(_onTabChanged);
     _tabController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+
     final HomeController homeController = Get.find<HomeController>();
     final AuthController authController = Get.find<AuthController>();
 
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
-    final double padding = screenWidth * 0.05;
-    final double buttonWidth = screenWidth * 0.25;
+
 
     return Scaffold(
       appBar: _buildAppBar(authController),
       body: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(17.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // SpeedometerWidget(),
-            _buildButtonRow(context, screenWidth),
-            SizedBox(height: screenHeight * 0.02),
-            const Center(
-              child:  Text(
-                'Inverter',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+            // speed meter
+            SizedBox(
+              height: screenHeight * 0.2,
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 16.0, left: 6),
+                    child: SizedBox(
+                      width: screenWidth * 0.4,
+                      height: screenWidth * 0.4,
+                      child: Obx(() {
+                        if (selectedSPData.value != null) {
+                          return SpeedMeter(
+                            speed: selectedSPData.value!.outputVoltage.toDouble(),
+                            alertSpeedArray: const [300.0, 600.0, 900.0],
+                            maxSpeed: 1000.0,
+                            unitOfMeasurement: 'Km/sec',
+                          );
+                        } else {
+                          return const SizedBox.shrink();
+                        }
+                      }),
+                    ),
+                  ),
+                  SizedBox(width: screenHeight * 0.02),
+                  SizedBox(
+                    width: screenWidth * 0.4,
+                    height: screenWidth * 0.4,
+                    child: Obx(() {
+                      if (selectedSPData.value != null) {
+                        return SpeedMeter(
+                          speed: selectedSPData.value!.bsVoltage.toDouble(),
+                          alertSpeedArray: const [3000.0, 6000.0, 9000.0],
+                          maxSpeed: 10000.0,
+                          unitOfMeasurement: 'MPH',
+                        );
+                      } else {
+                        return const SizedBox.shrink();
+                      }
+                    }),
+                  ),
+                ],
               ),
             ),
+        _buildButtonRow(context, screenWidth),
+
             Expanded(
               child: Obx(() {
                 if (homeController.isLoading.value) {
@@ -70,14 +126,12 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                   );
                 }
 
-                if (homeController.inverterData.isEmpty &&
-                    homeController.spData.isEmpty &&
+                if (homeController.spData.isEmpty &&
                     homeController.permissionData.isEmpty) {
                   return const Center(
                     child: Text('No data available'),
                   );
                 }
-
                 return _buildDataList(homeController, screenHeight, screenWidth);
               }),
             ),
@@ -86,6 +140,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       ),
     );
   }
+
 
   Widget _buildButtonRow(BuildContext context, double screenWidth) {
     return Row(
@@ -122,17 +177,18 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       width: screenWidth * 0.95,
       child: Column(
         children: [
-          Expanded(
-            flex: 1,
-            child: ListView(
-              children: [
-                ..._buildInverterList(homeController),
-                // ..._buildMorgensonData(homeController),
-              ],
-            ),
-          ),
+          // Expanded(
+          //   flex: 1,
+          //   child: ListView(
+          //     children: [
+          //       // ..._buildInverterList(homeController),
+          //       // ..._buildMorgensonData(homeController),
+          //     ],
+          //   ),
+          // ),
 
           // Tab Bar Container
+          const SizedBox(height: 15,),
           Container(
             height: 40,
             decoration: BoxDecoration(
