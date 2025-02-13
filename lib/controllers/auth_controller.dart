@@ -146,9 +146,12 @@ class AuthController extends GetxController {
         return;
       }
 
+
+
       // Check if the 'isVerified' field in the database is true
       if (userModel.isVerified != null && userModel.isVerified!) {
         // Proceed with updating the verification status and navigating
+
         await _userService.updateUserVerificationStatus(user.uid, true);
 
         // Update user data in the controller

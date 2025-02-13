@@ -1,7 +1,4 @@
-import 'package:app_name/model/kamoa.dart';
-import 'package:app_name/views/phase1.dart';
 import 'package:app_name/views/widgets/widgets/custom_button.dart';
-import 'package:app_name/views/widgets/widgets/generator_widget.dart';
 import 'package:app_name/views/widgets/widgets/speed_meter.dart';
 
 import 'package:flutter/material.dart';
@@ -22,7 +19,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    final HomeController homeController = Get.find<HomeController>();
+    _tabController = TabController(length: homeController.spData.length, vsync: this);
   }
 
   @override
@@ -49,7 +47,6 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // SpeedometerWidget(),
-
             _buildButtonRow(context, screenWidth),
             SizedBox(height: screenHeight * 0.02),
             const Center(
@@ -116,6 +113,10 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   }
 
   Widget _buildDataList(HomeController homeController, double screenHeight, double screenWidth) {
+
+    List<MapEntry<String, dynamic>> sortedSpData = homeController.spData.entries.toList()
+      ..sort((a, b) => a.key.compareTo(b.key));
+
     return SizedBox(
       height: screenHeight * 0.8,
       width: screenWidth * 0.95,
@@ -136,56 +137,38 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             height: 40,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
-              color: Colors.grey[300], // Background color for the tab container
+              color: Colors.grey[300],
             ),
             child: TabBar(
               controller: _tabController,
-              labelColor: Colors.white, // Text color when selected
-              unselectedLabelColor: Colors.black, // Text color when not selected
+              labelColor: Colors.white,
+              unselectedLabelColor: Colors.black,
               indicator: BoxDecoration(
-                color: Colors.green, // Selected tab background color
-                borderRadius: BorderRadius.circular(20), // Makes it round
+                color: Colors.green,
+                borderRadius: BorderRadius.circular(20),
               ),
-              indicatorSize: TabBarIndicatorSize.tab, // Ensures full height indicator
-              dividerColor: Colors.transparent, // Hides the bottom line
-              overlayColor: MaterialStateProperty.all(Colors.transparent), // No highlight effect
-              tabs: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.3, // 60% width of tab
-                  child: Tab(text: 'SP-01'),
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.3, // 60% width of tab
-                  child: Tab(text: 'SP-02'),
-                ),
-              ],
+              indicatorSize: TabBarIndicatorSize.tab,
+              dividerColor: Colors.transparent,
+              overlayColor: MaterialStateProperty.all(Colors.transparent),
+              tabs: sortedSpData.map((spEntry) => SizedBox(
+                width: MediaQuery.of(context).size.width * 0.3,
+                child: Tab(text: spEntry.key),
+              )).toList(),
             ),
           ),
 
-
-          // Tab Bar View
+          // tab bar view
           Expanded(
             flex: 5,
             child: TabBarView(
               controller: _tabController,
-              children: [
-                // First Tab - SP-01
-                ListView(
-                  children: [
-                    ...homeController.spData.entries
-                        .where((entry) => entry.key == 'SP-01')
-                        .map((entry) => _buildSPCard(entry.key, entry.value)),
-                  ],
-                ),
-                // Second Tab - SP-02
-                ListView(
-                  children: [
-                    ...homeController.spData.entries
-                        .where((entry) => entry.key == 'SP-02')
-                        .map((entry) => _buildSPCard(entry.key, entry.value)),
-                  ],
-                ),
-              ],
+              children: sortedSpData.map((entry) => ListView(
+                children: [
+                  ...homeController.spData.entries
+                      .where((e) => e.key == entry.key)
+                      .map((e) => _buildSPCard(e.key, e.value)),
+                ],
+              )).toList(),
             ),
           ),
         ],
