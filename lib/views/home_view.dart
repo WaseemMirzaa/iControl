@@ -84,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                       child: Obx(() {
                         if (selectedSPData.value != null) {
                           return SpeedMeter(
-                            key: Key('output-${_tabController.index}'),
+                            key: Key('output-voltage: ${_tabController.index}'),
                             speed: selectedSPData.value!.outputVoltage.toDouble(),
                             alertSpeedArray: const [250.0, 500.0, 700.0],
                             maxSpeed: 1000.0,
@@ -103,10 +103,10 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                     child: Obx(() {
                       if (selectedSPData.value != null) {
                         return SpeedMeter(
-                          key: Key('bs-${_tabController.index}'),
-                          speed: selectedSPData.value!.bsVoltage.toDouble(),
-                          alertSpeedArray: const [2500.0, 5000.0, 7000.0],
-                          maxSpeed: 10000.0,
+                          key: Key('output-current: ${_tabController.index}'),
+                          speed: selectedSPData.value!.outputCurrent.toDouble(),
+                          alertSpeedArray: const [1500.0, 2500.0, 4000.0],
+                          maxSpeed: 5000.0,
                           unitOfMeasurement: 'MPH',
                         );
                       } else {

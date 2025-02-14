@@ -49,6 +49,7 @@ class SPData {
   final double lat;
   final double long;
   final int outputVoltage;
+  final int outputCurrent;
   final String pumpStartTime;
 
   SPData({
@@ -63,6 +64,7 @@ class SPData {
     required this.lat,
     required this.long,
     required this.outputVoltage,
+    required this.outputCurrent,
     required this.pumpStartTime,
   });
 
@@ -79,6 +81,7 @@ class SPData {
       lat: map['center']?['lat']?.toDouble() ?? 0.0,
       long: map['center']?['long']?.toDouble() ?? 0.0,
       outputVoltage: map['Output_Voltage'] ?? 0.0,
+      outputCurrent: map['Output_Current'] ?? 0.0,
       pumpStartTime: map['pump_start_time'] ?? '',
     );
   }
