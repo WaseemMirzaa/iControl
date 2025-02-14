@@ -5,7 +5,7 @@ class SpeedMeter extends StatefulWidget {
   final double maxSpeed;
   final double speed;
   final String unitOfMeasurement;
-  final List<double> alertSpeedArray;  // Changed to List<double>
+  final List<double> alertSpeedArray;
 
   const SpeedMeter({
     super.key,
@@ -43,7 +43,7 @@ class _SpeedMeterState extends State<SpeedMeter> {
               maxSpeed: widget.maxSpeed,
               speed: widget.speed,
               animate: true,
-              duration: const Duration(seconds: 3),
+              duration: const Duration(seconds: 1),
               alertColorArray: const [Colors.blue, Colors.orange, Colors.red],
               alertSpeedArray: widget.alertSpeedArray,
               unitOfMeasurement: widget.unitOfMeasurement,

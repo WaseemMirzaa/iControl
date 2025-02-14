@@ -33,6 +33,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     selectedSPData.value = sortedSpData[_tabController.index].value;
 
     _tabController.addListener(_onTabChanged);
+
+
+
   }
 
   void _onTabChanged() {
@@ -81,8 +84,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                       child: Obx(() {
                         if (selectedSPData.value != null) {
                           return SpeedMeter(
+                            key: Key('output-${_tabController.index}'),
                             speed: selectedSPData.value!.outputVoltage.toDouble(),
-                            alertSpeedArray: const [300.0, 600.0, 900.0],
+                            alertSpeedArray: const [250.0, 500.0, 700.0],
                             maxSpeed: 1000.0,
                             unitOfMeasurement: 'Km/sec',
                           );
@@ -99,8 +103,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                     child: Obx(() {
                       if (selectedSPData.value != null) {
                         return SpeedMeter(
+                          key: Key('bs-${_tabController.index}'),
                           speed: selectedSPData.value!.bsVoltage.toDouble(),
-                          alertSpeedArray: const [3000.0, 6000.0, 9000.0],
+                          alertSpeedArray: const [2500.0, 5000.0, 7000.0],
                           maxSpeed: 10000.0,
                           unitOfMeasurement: 'MPH',
                         );
@@ -112,6 +117,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                 ],
               ),
             ),
+
         _buildButtonRow(context, screenWidth),
 
             Expanded(
@@ -177,16 +183,6 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       width: screenWidth * 0.95,
       child: Column(
         children: [
-          // Expanded(
-          //   flex: 1,
-          //   child: ListView(
-          //     children: [
-          //       // ..._buildInverterList(homeController),
-          //       // ..._buildMorgensonData(homeController),
-          //     ],
-          //   ),
-          // ),
-
           // Tab Bar Container
           const SizedBox(height: 15,),
           Container(

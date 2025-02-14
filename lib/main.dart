@@ -1,5 +1,6 @@
 // lib/main.dart
 import 'package:app_name/controllers/home_controller.dart';
+import 'package:app_name/controllers/user_controller.dart';
 import 'package:app_name/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -16,8 +17,10 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  Get.put(HomeController());
+
+
   DependencyInjection.init();
+  Get.put(HomeController());
   runApp(const MyApp());
 }
 
