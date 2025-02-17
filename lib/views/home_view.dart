@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:app_name/views/widgets/widgets/custom_button.dart';
-import 'package:app_name/views/widgets/widgets/speed_meter.dart';
+import 'package:app_name/widgets/speed_meter.dart';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -43,6 +43,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       ..sort((a, b) => a.key.compareTo(b.key));
 
     selectedSPData.value = sortedSpData[_tabController.index].value;
+
     print("Tab changed: ${_tabController.index}");
     print("New BS Voltage: ${selectedSPData.value?.bsVoltage}");
   }
@@ -88,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                             speed: selectedSPData.value!.outputVoltage.toDouble(),
                             alertSpeedArray: const [250.0, 500.0, 700.0],
                             maxSpeed: 1000.0,
-                            unitOfMeasurement: 'Km/sec',
+                            unitOfMeasurement: 'Volts',
                           );
                         } else {
                           return const SizedBox.shrink();
@@ -105,9 +106,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                         return SpeedMeter(
                           key: Key('output-current: ${_tabController.index}'),
                           speed: selectedSPData.value!.outputCurrent.toDouble(),
-                          alertSpeedArray: const [1500.0, 2500.0, 4000.0],
-                          maxSpeed: 5000.0,
-                          unitOfMeasurement: 'MPH',
+                          alertSpeedArray: const [2500.0, 4500.0, 6000.0],
+                          maxSpeed: 7000.0,
+                          unitOfMeasurement: 'Amps',
                         );
                       } else {
                         return const SizedBox.shrink();
@@ -164,6 +165,18 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       title: const Text('iCloud Dashboard'),
       actions: [
         IconButton(
+          icon: const Icon(Icons.refresh),
+          onPressed: () {
+
+            selectedSPData.value = null;
+            Future.delayed(const Duration(milliseconds: 50), () {
+              List<MapEntry<String, dynamic>> sortedSpData = homeController.spData.entries.toList()
+                ..sort((a, b) => a.key.compareTo(b.key));
+              selectedSPData.value = sortedSpData[_tabController.index].value;
+            });
+          },
+        ),
+        IconButton(
           icon: const Icon(Icons.logout),
           onPressed: () async {
             await authController.logout();
@@ -191,6 +204,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               borderRadius: BorderRadius.circular(20),
               color: Colors.grey[300],
             ),
+
             child: TabBar(
               controller: _tabController,
               labelColor: Colors.white,
@@ -199,6 +213,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                 color: Colors.green,
                 borderRadius: BorderRadius.circular(20),
               ),
+
               indicatorSize: TabBarIndicatorSize.tab,
               dividerColor: Colors.transparent,
               overlayColor: MaterialStateProperty.all(Colors.transparent),
@@ -246,18 +261,6 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     );
   }
 
-  List<Widget> _buildInverterList(HomeController homeController) {
-    return homeController.inverterData.map((inverter) {
-      return _buildInverterCard(inverter);
-    }).toList();
-  }
-  //
-  List<Widget> _buildMorgensonData(HomeController homeController) {
-    return homeController.spData.entries.map((entry) {
-      final sp = entry.value;
-      return _buildSPCard(entry.key, sp);
-    }).toList();
-  }
 
 // SP Widget
   Widget _buildSPCard(String spName, SPData sp) {

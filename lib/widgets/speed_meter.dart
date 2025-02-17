@@ -56,7 +56,8 @@ class _SpeedMeterState extends State<SpeedMeter> {
               ),
               unitOfMeasurementTextStyle: TextStyle(
                 color: Colors.black,
-                fontSize: baseTextSize * 1.3,
+                fontSize: baseTextSize * 1.5,
+                fontWeight: FontWeight.w700,
               ),
               minMaxTextStyle: TextStyle(
                 color: Colors.black,
