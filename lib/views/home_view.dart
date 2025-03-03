@@ -162,7 +162,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
   AppBar _buildAppBar(AuthController authController) {
     return AppBar(
-      title: const Text('iCloud Dashboard'),
+      title: const Text('iControl Dashboard'),
       actions: [
         IconButton(
           icon: const Icon(Icons.refresh),
