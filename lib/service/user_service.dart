@@ -58,8 +58,6 @@ class UserService {
     }
   }
 
-  
-
   // Check if user is verified
   Future<bool> isUserVerified(String uid) async {
     try {
@@ -94,7 +92,8 @@ class UserService {
     }
   }
 
-  Future<void> addPermissions(String email, Map<String, dynamic> permissions) async {
+  Future<void> addPermissions(
+      String email, Map<String, dynamic> permissions) async {
     try {
       final sanitizedEmail = email.replaceAll('.', '_');
       final permissionsRef = _dbRef.child('permissions').child(sanitizedEmail);
@@ -105,6 +104,4 @@ class UserService {
       throw Exception('Failed to add permissions: $e');
     }
   }
-
 }
-

@@ -118,100 +118,89 @@ class HomeController extends GetxController {
     fetchPhase3Data();
   }
 
- Future<void> fetchPhase1Data() async {
-  try {
-    isLoading.value = true;
-    errorMessage.value = '';
-    
-    print('Fetching phase 1 data...');
-    final snapshot = await _db.child('Kamoa/PlantPhase1').get();
+  Future<void> fetchPhase1Data() async {
+    try {
+      isLoading.value = true;
+      errorMessage.value = '';
 
-    if (snapshot.exists && snapshot.value != null) {
-      print('Raw snapshot value: ${snapshot.value}');
-      
-      final data = snapshot.value as Map<dynamic, dynamic>;
-      phase1Data.value = PhaseData.fromJson(data);
-      
+      print('Fetching phase 1 data...');
+      final snapshot = await _db.child('Kamoa/PlantPhase1').get();
 
-    } else {
-      print('Snapshot does not exist or is null');
-      errorMessage.value = 'No data available';
+      if (snapshot.exists && snapshot.value != null) {
+        print('Raw snapshot value: ${snapshot.value}');
+
+        final data = snapshot.value as Map<dynamic, dynamic>;
+        phase1Data.value = PhaseData.fromJson(data);
+      } else {
+        print('Snapshot does not exist or is null');
+        errorMessage.value = 'No data available';
+        phase1Data.value = null;
+      }
+    } catch (e, stackTrace) {
+      print('Error fetching data: $e');
+      print('Stack trace: $stackTrace');
+      errorMessage.value = 'Error fetching data: $e';
       phase1Data.value = null;
+    } finally {
+      isLoading.value = false;
     }
-  } catch (e, stackTrace) {
-    print('Error fetching data: $e');
-    print('Stack trace: $stackTrace');
-    errorMessage.value = 'Error fetching data: $e';
-    phase1Data.value = null;
-  } finally {
-    isLoading.value = false;
   }
-}
 
+  Future<void> fetchPhase2Data() async {
+    try {
+      isLoading.value = true;
+      errorMessage.value = '';
 
- Future<void> fetchPhase2Data() async {
-  try {
-    isLoading.value = true;
-    errorMessage.value = '';
-    
-    print('Fetching phase 1 data...');
-    final snapshot = await _db.child('Kamoa/PlantPhase2').get();
+      print('Fetching phase 1 data...');
+      final snapshot = await _db.child('Kamoa/PlantPhase2').get();
 
-    if (snapshot.exists && snapshot.value != null) {
-      print('Raw snapshot value: ${snapshot.value}');
-      
-      final data = snapshot.value as Map<dynamic, dynamic>;
-      phase2Data.value = PhaseData.fromJson(data);
-      
-     
-    } else {
-      print('Snapshot does not exist or is null');
-      errorMessage.value = 'No data available';
+      if (snapshot.exists && snapshot.value != null) {
+        print('Raw snapshot value: ${snapshot.value}');
+
+        final data = snapshot.value as Map<dynamic, dynamic>;
+        phase2Data.value = PhaseData.fromJson(data);
+      } else {
+        print('Snapshot does not exist or is null');
+        errorMessage.value = 'No data available';
+        phase2Data.value = null;
+      }
+    } catch (e, stackTrace) {
+      print('Error fetching data: $e');
+      print('Stack trace: $stackTrace');
+      errorMessage.value = 'Error fetching data: $e';
       phase2Data.value = null;
+    } finally {
+      isLoading.value = false;
     }
-  } catch (e, stackTrace) {
-    print('Error fetching data: $e');
-    print('Stack trace: $stackTrace');
-    errorMessage.value = 'Error fetching data: $e';
-    phase2Data.value = null;
-  } finally {
-    isLoading.value = false;
   }
-}
 
+  Future<void> fetchPhase3Data() async {
+    try {
+      isLoading.value = true;
+      errorMessage.value = '';
 
+      print('Fetching phase 1 data...');
+      final snapshot = await _db.child('Kamoa/PlantPhase3').get();
 
- Future<void> fetchPhase3Data() async {
-  try {
-    isLoading.value = true;
-    errorMessage.value = '';
-    
-    print('Fetching phase 1 data...');
-    final snapshot = await _db.child('Kamoa/PlantPhase3').get();
+      if (snapshot.exists && snapshot.value != null) {
+        print('Raw snapshot value: ${snapshot.value}');
 
-    if (snapshot.exists && snapshot.value != null) {
-      print('Raw snapshot value: ${snapshot.value}');
-      
-      final data = snapshot.value as Map<dynamic, dynamic>;
-      phase3Data.value = PhaseData.fromJson(data);
-      
-    
-    } else {
-      print('Snapshot does not exist or is null');
-      errorMessage.value = 'No data available';
+        final data = snapshot.value as Map<dynamic, dynamic>;
+        phase3Data.value = PhaseData.fromJson(data);
+      } else {
+        print('Snapshot does not exist or is null');
+        errorMessage.value = 'No data available';
+        phase3Data.value = null;
+      }
+    } catch (e, stackTrace) {
+      print('Error fetching data: $e');
+      print('Stack trace: $stackTrace');
+      errorMessage.value = 'Error fetching data: $e';
       phase3Data.value = null;
+    } finally {
+      isLoading.value = false;
     }
-  } catch (e, stackTrace) {
-    print('Error fetching data: $e');
-    print('Stack trace: $stackTrace');
-    errorMessage.value = 'Error fetching data: $e';
-    phase3Data.value = null;
-  } finally {
-    isLoading.value = false;
   }
-}
-
-
 
   Future<void> fetchEnergySifhtChangingData() async {
     try {
@@ -373,7 +362,7 @@ class HomeController extends GetxController {
   void fetchMorgensonData() {
     isLoading.value = true;
 
-    _db.child('Morgenson').onValue.listen(
+    _db.child('TestClient').onValue.listen(
       (event) {
         final data = event.snapshot.value as Map<dynamic, dynamic>?;
         if (data != null) {
