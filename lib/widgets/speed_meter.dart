@@ -42,7 +42,7 @@ class _SpeedMeterState extends State<SpeedMeter> {
               minSpeed: 0,
               maxSpeed: widget.maxSpeed,
               speed: widget.speed,
-              animate: true,
+              animate: false,
               duration: const Duration(seconds: 1),
               alertColorArray: const [Colors.blue, Colors.orange, Colors.red],
               alertSpeedArray: widget.alertSpeedArray,
